@@ -51,6 +51,7 @@ python train.py
 
 # KUMC (Detection)
 cd Endo-FM/STMT
+python setup.py build develop  # install stft_core package
 python -m torch.distributed.launch \
     --nproc_per_node=1 \
     tools/train_net.py \
