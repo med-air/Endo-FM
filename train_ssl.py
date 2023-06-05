@@ -39,7 +39,7 @@ from datasets import Kinetics
 from datasets.rand_conv import RandConv
 from models import get_vit_base_patch16_224, get_aux_token_vit, SwinTransformer3D, S3D
 from utils.parser import load_config
-from eval_knn import extract_features, knn_classifier, UCFReturnIndexDataset, HMDBReturnIndexDataset
+# from eval_knn import extract_features, knn_classifier, UCFReturnIndexDataset, HMDBReturnIndexDataset
 
 torchvision_archs = sorted(name for name in torchvision_models.__dict__
                            if name.islower() and not name.startswith("__")
@@ -234,10 +234,10 @@ def train_svt(args):
             motion_embed_dim = None
 
     # print(teacher)
-    flops, params = profile(teacher, inputs=(torch.randn(1, 3, 16, 224, 224),))
-    print('FLOPs = ' + str(flops / 1000 ** 3) + 'G')
-    print('Params = ' + str(params / 1000 ** 2) + 'M')
-    exit(0)
+    # flops, params = profile(teacher, inputs=(torch.randn(1, 3, 16, 224, 224),))
+    # print('FLOPs = ' + str(flops / 1000 ** 3) + 'G')
+    # print('Params = ' + str(params / 1000 ** 2) + 'M')
+    # exit(0)
 
     if args.arch == "swin":
         student = SwinTransformer3D(depths=[2, 2, 18, 2], embed_dim=128, num_heads=[4, 8, 16, 32])

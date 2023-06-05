@@ -1,6 +1,6 @@
 # Foundation Model for Endoscopy Video Analysis
 
-This is the PyTorch[1] implemention of our paper [**Foundation Model for Endoscopy Video Analysis via Large-scale Self-supervised Pre-train**]()
+This is the PyTorch[1] implemention of our paper [**Foundation Model for Endoscopy Video Analysis via Large-scale Self-supervised Pre-train**](https://openreview.net/forum?id=WHA8009laxu)
 by [Zhao Wang](https://kyfafyd.wang)\*, Chang Liu\*, [Shaoting Zhang](http://www.qingyuan.sjtu.edu.cn/a/Shaoting-Zhang.html)†, and [Qi Dou](http://www.cse.cuhk.edu.hk/~qdou)†.
 
 ## Abatract
@@ -36,6 +36,7 @@ You can download our pre-trained Endo-FM from [google drive](https://drive.googl
 #### Pre-training
 ```shell
 cd Endo-FM
+wget https://github.com/kahnchana/svt/releases/download/v1.0/kinetics400_vitb_ssl.pth
 zsh scripts/train_clips32k.sh
 ```
 
@@ -51,7 +52,6 @@ python train.py
 
 # KUMC (Detection)
 cd Endo-FM/STMT
-python setup.py build develop  # install stft_core package
 python -m torch.distributed.launch \
     --nproc_per_node=1 \
     tools/train_net.py \

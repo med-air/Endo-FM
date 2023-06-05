@@ -101,6 +101,7 @@ dependencies:
     - tensorboardx==2.6
     - termcolor==2.3.0
     - threadpoolctl==3.1.0
+    - thop==0.1.1.post2209072238
     - timm==0.4.12
     - tomli==2.0.1
     - tqdm==4.65.0
