@@ -1,6 +1,6 @@
 # Foundation Model for Endoscopy Video Analysis
 
-This is the PyTorch[1] implemention of our paper [**Foundation Model for Endoscopy Video Analysis via Large-scale Self-supervised Pre-train**](https://openreview.net/forum?id=WHA8009laxu)
+This is the PyTorch[1] implemention of our paper [**Foundation Model for Endoscopy Video Analysis via Large-scale Self-supervised Pre-train**]()
 by [Zhao Wang](https://kyfafyd.wang)\*, Chang Liu\*, [Shaoting Zhang](http://www.qingyuan.sjtu.edu.cn/a/Shaoting-Zhang.html)†, and [Qi Dou](http://www.cse.cuhk.edu.hk/~qdou)†.
 
 ## Abatract
