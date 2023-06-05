@@ -1,0 +1,138 @@
+# Copyright (c) SenseTime Research and its affiliates. All Rights Reserved.
+from collections import OrderedDict
+
+from torch import nn
+import torch
+
+from stft_core.modeling import registry
+from stft_core.modeling.make_layers import conv_with_kaiming_uniform
+from . import fpn as fpn_module
+from . import resnet
+from . import resnet_dcn
+
+# from einops import rearrange
+# from .vit import build_vit_base_patch16_224
+
+
+@registry.BACKBONES.register("ResDCN-18")
+@registry.BACKBONES.register("ResDCN-34")
+@registry.BACKBONES.register("ResDCN-50")
+def build_resnetdcn_backbone(cfg):
+    body = resnet_dcn.get_center_net(cfg)
+    model = nn.Sequential(OrderedDict([("body", body)]))
+    return model
+
+
+@registry.BACKBONES.register("R-50-C4")
+@registry.BACKBONES.register("R-50-C5")
+@registry.BACKBONES.register("R-101-C4")
+@registry.BACKBONES.register("R-101-C5")
+def build_resnet_backbone(cfg):
+    body = resnet.ResNet(cfg)
+    model = nn.Sequential(OrderedDict([("body", body)]))
+    model.out_channels = cfg.MODEL.RESNETS.BACKBONE_OUT_CHANNELS
+    return model
+
+
+@registry.BACKBONES.register("R-50-FPN")
+@registry.BACKBONES.register("R-101-FPN")
+@registry.BACKBONES.register("R-152-FPN")
+def build_resnet_fpn_backbone(cfg):
+    body = resnet.ResNet(cfg)
+    in_channels_stage2 = cfg.MODEL.RESNETS.RES2_OUT_CHANNELS
+    out_channels = cfg.MODEL.RESNETS.BACKBONE_OUT_CHANNELS
+    fpn = fpn_module.FPN(
+        in_channels_list=[
+            in_channels_stage2,
+            in_channels_stage2 * 2,
+            in_channels_stage2 * 4,
+            in_channels_stage2 * 8,
+        ],
+        out_channels=out_channels,
+        conv_block=conv_with_kaiming_uniform(
+            cfg.MODEL.FPN.USE_GN, cfg.MODEL.FPN.USE_RELU
+        ),
+        top_blocks=fpn_module.LastLevelMaxPool(),
+    )
+    model = nn.Sequential(OrderedDict([("body", body), ("fpn", fpn)]))
+    model.out_channels = out_channels
+    return model
+
+
+@registry.BACKBONES.register("R-50-FPN-RETINANET")
+@registry.BACKBONES.register("R-101-FPN-RETINANET")
+def build_resnet_fpn_p3p7_backbone(cfg):
+    from .vit import get_vit_base_patch16_224
+    body = get_vit_base_patch16_224()
+
+    weight = '../checkpoints/foundation_surgical_clips32k/checkpoint0030.pth'
+    # weight = '../checkpoints/TimeSformer_divST_8x32_224_K400.pyth'
+    ckpt = torch.load(weight, map_location='cpu')
+    if "teacher" in ckpt:
+        ckpt = ckpt["teacher"]
+    if "model_state" in ckpt:
+        ckpt = ckpt["model_state"]
+
+    # print(ckpt.keys())
+    if 'TimeSformer' in weight:
+        ckpt = {"backbone." + key[len("model."):]: value for key, value in ckpt.items()}
+    # print(ckpt.keys())
+
+    renamed_checkpoint = {x[len("backbone."):]: y for x, y in ckpt.items() if x.startswith("backbone.")}
+    msg = body.load_state_dict(renamed_checkpoint, strict=False)
+    print(f"Loaded model with msg: {msg}")
+
+    in_channels_stage2 = cfg.MODEL.RESNETS.RES2_OUT_CHANNELS
+    out_channels = cfg.MODEL.RESNETS.BACKBONE_OUT_CHANNELS
+    in_channels_p6p7 = in_channels_stage2 * 8 if cfg.MODEL.RETINANET.USE_C5 \
+        else out_channels #1024 for retinanet, 256 for fcos
+    fpn = fpn_module.FPN(
+        in_channels_list=[
+            0,
+            in_channels_stage2,
+            in_channels_stage2,
+            in_channels_stage2,
+        ],
+        out_channels=out_channels,
+        conv_block=conv_with_kaiming_uniform(
+            cfg.MODEL.FPN.USE_GN, cfg.MODEL.FPN.USE_RELU
+        ),
+        top_blocks=fpn_module.LastLevelP6P7(in_channels_p6p7, out_channels),
+    )
+    model = nn.Sequential(OrderedDict([("body", body), ("fpn", fpn)]))
+    model.out_channels = out_channels
+    return model
+
+
+# @registry.BACKBONES.register("R-50-FPN-RETINANET")
+# @registry.BACKBONES.register("R-101-FPN-RETINANET")
+# def build_resnet_fpn_p3p7_backbone(cfg):
+#     body = resnet.ResNet(cfg)
+#     in_channels_stage2 = cfg.MODEL.RESNETS.RES2_OUT_CHANNELS
+#     out_channels = cfg.MODEL.RESNETS.BACKBONE_OUT_CHANNELS
+#     in_channels_p6p7 = in_channels_stage2 * 8 if cfg.MODEL.RETINANET.USE_C5 \
+#         else out_channels #1024 for retinanet, 256 for fcos
+#     fpn = fpn_module.FPN(
+#         in_channels_list=[
+#             0,
+#             in_channels_stage2 * 2,
+#             in_channels_stage2 * 4,
+#             in_channels_stage2 * 8,
+#         ],
+#         out_channels=out_channels,
+#         conv_block=conv_with_kaiming_uniform(
+#             cfg.MODEL.FPN.USE_GN, cfg.MODEL.FPN.USE_RELU
+#         ),
+#         top_blocks=fpn_module.LastLevelP6P7(in_channels_p6p7, out_channels),
+#     )
+#     model = nn.Sequential(OrderedDict([("body", body), ("fpn", fpn)]))
+#     model.out_channels = out_channels
+#     return model
+
+
+def build_backbone(cfg):
+    assert cfg.MODEL.BACKBONE.CONV_BODY in registry.BACKBONES, \
+        "cfg.MODEL.BACKBONE.CONV_BODY: {} are not registered in registry".format(
+            cfg.MODEL.BACKBONE.CONV_BODY
+        )
+    return registry.BACKBONES[cfg.MODEL.BACKBONE.CONV_BODY](cfg)
