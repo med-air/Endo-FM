@@ -46,20 +46,20 @@ zsh scripts/train_clips32k.sh
 cd Endo-FM
 zsh scripts/eval_finetune_polypdet.sh
 
-# CVC (Segmentation)
-cd Endo-FM/TransUNet
-python train.py
-
 # KUMC (Detection)
 cd Endo-FM/STMT
+python setup.py build develop
 python -m torch.distributed.launch \
     --nproc_per_node=1 \
     tools/train_net.py \
     --master_port=$((RANDOM + 10000)) \
     --config-file configs/STFT/cvcvid_R_50_STFT.yaml \
     OUTPUT_DIR log_dir/kumc_finetune
-```
 
+# CVC (Segmentation)
+cd Endo-FM/TransUNet
+python train.py
+```
 
 ## Citation
 
