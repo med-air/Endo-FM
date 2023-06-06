@@ -260,8 +260,8 @@ def load_model(model, weights, optimizer=None, lr_sheduler=None):
 
     # print(pretrained_dict.keys())
 
-    model_dict.update(pretrained_dict)  # 用预训练模型参数更新new_model中的部分参数
-    model.load_state_dict(model_dict)  # 将更新后的model_dict加载进new model中
+    model_dict.update(pretrained_dict)
+    model.load_state_dict(model_dict)
 
 
 class Encoder(nn.Module):

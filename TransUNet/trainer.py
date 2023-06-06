@@ -183,8 +183,8 @@ def trainer_synapse(args, model, snapshot_path):
                 writer.add_image('train/GroundTruth', labs * 255, iter_num)
                 # exit(0)
 
-        train_dice, train_hd5 = eval(model, trainloader, 'cuda', classes=2)
-        print('Epoch [%3d/%3d], Train Dice: %.4f' % (epoch_num + 1, max_epoch, train_dice))
+        # train_dice, train_hd5 = eval(model, trainloader, 'cuda', classes=2)
+        # print('Epoch [%3d/%3d], Train Dice: %.4f' % (epoch_num + 1, max_epoch, train_dice))
         test_dice, test_hd95 = eval(model, testloader, 'cuda', classes=2)
         if test_dice > best_dice:
             best_dice = test_dice
