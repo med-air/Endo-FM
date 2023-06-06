@@ -28,7 +28,7 @@ parser.add_argument('--batch_size', type=int,
 parser.add_argument('--n_gpu', type=int, default=1, help='total gpu')
 parser.add_argument('--deterministic', type=int,  default=1,
                     help='whether use deterministic training')
-parser.add_argument('--base_lr', type=float,  default=0.01,
+parser.add_argument('--base_lr', type=float,  default=1e-4,
                     help='segmentation network learning rate')
 parser.add_argument('--img_size', type=int,
                     default=224, help='input patch size of network input')
@@ -50,6 +50,8 @@ if __name__ == "__main__":
     else:
         cudnn.benchmark = False
         cudnn.deterministic = True
+
+    args.seed = random.randint(1, 10000)
 
     random.seed(args.seed)
     np.random.seed(args.seed)

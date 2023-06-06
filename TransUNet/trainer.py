@@ -21,11 +21,11 @@ import medpy
 def calculate_metric_percase(pred, gt):
     pred[pred > 0] = 1
     gt[gt > 0] = 1
-    if pred.sum() > 0 and gt.sum()>0:
+    if pred.sum() > 0 and gt.sum() > 0:
         dice = medpy.metric.binary.dc(pred, gt)
         hd95 = medpy.metric.binary.hd95(pred, gt)
         return dice, hd95
-    elif pred.sum() > 0 and gt.sum()==0:
+    elif pred.sum() > 0 and gt.sum() == 0:
         return 1., 0.
     else:
         return 0., 0.
@@ -91,9 +91,10 @@ def trainer_synapse(args, model, snapshot_path):
         # RandomRescale(0.5, 1.2),
         # RandomCrop((input_size, input_size)),
         # RandomColor(),
-        Resize((args.img_size, args.img_size)),
-        # RandomFlip(),
-        # RandomRotation(),
+        Resize((args.img_size + 32, args.img_size + 32)),
+        RandomCrop((args.img_size, args.img_size)),
+        RandomFlip(),
+        RandomRotation(),
         ToTensor(),
         Normalize(mean=[0.5, 0.5, 0.5],
                   std=[0.5, 0.5, 0.5])
@@ -123,8 +124,11 @@ def trainer_synapse(args, model, snapshot_path):
     model.train()
     ce_loss = CrossEntropyLoss()
     dice_loss = DiceLoss(num_classes)
-    optimizer = optim.SGD(model.parameters(), lr=base_lr, momentum=0.9, weight_decay=0.0001)
-    # optimizer = optim.AdamW(model.parameters(), lr=base_lr / 10., weight_decay=1e-2)
+    # print(model)
+
+    # optimizer = optim.SGD(model.parameters(), lr=base_lr, momentum=0.9, weight_decay=0.0001)
+    optimizer = optim.AdamW(model.parameters(), lr=base_lr, weight_decay=5e-2)
+
     writer = SummaryWriter(snapshot_path + '/log')
     iter_num = 0
     max_epoch = args.max_epochs
@@ -136,10 +140,7 @@ def trainer_synapse(args, model, snapshot_path):
     iterator = range(max_epoch)
     for epoch_num in iterator:
         model.train()
-        # train_dice = eval(model, trainloader, 'cuda', classes=2)
-        # print('Epoch [%3d/%3d], Train Dice: %.4f' % (epoch_num, max_epoch, train_dice))
-        # test_dice = eval(model, testloader, 'cuda', classes=2)
-        # print('Epoch [%3d/%3d], Val Dice: %.4f' % (epoch_num, max_epoch, test_dice))
+
         for i_batch, sampled_batch in enumerate(trainloader):
             image_batch, label_batch = sampled_batch['image'].squeeze(0), sampled_batch['label'].squeeze(0)
             image_batch, label_batch = image_batch.cuda(), label_batch.cuda()
@@ -182,8 +183,8 @@ def trainer_synapse(args, model, snapshot_path):
                 writer.add_image('train/GroundTruth', labs * 255, iter_num)
                 # exit(0)
 
-        # train_dice = eval(model, trainloader, 'cuda', classes=2)
-        # print('Epoch [%3d/%3d], Train Dice: %.4f' % (epoch_num, max_epoch, train_dice))
+        train_dice, train_hd5 = eval(model, trainloader, 'cuda', classes=2)
+        print('Epoch [%3d/%3d], Train Dice: %.4f' % (epoch_num + 1, max_epoch, train_dice))
         test_dice, test_hd95 = eval(model, testloader, 'cuda', classes=2)
         if test_dice > best_dice:
             best_dice = test_dice

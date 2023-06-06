@@ -274,7 +274,6 @@ class Encoder(nn.Module):
         backbone = build_vit_base_patch16_224()
 
         weight = '../checkpoints/foundation_surgical_clips32k/checkpoint0030.pth'
-        # weight = '../checkpoints/TimeSformer_divST_8x32_224_K400.pyth'
         ckpt = torch.load(weight, map_location='cpu')
         if "teacher" in ckpt:
             ckpt = ckpt["teacher"]
@@ -287,10 +286,6 @@ class Encoder(nn.Module):
         renamed_checkpoint = {x[len("backbone."):]: y for x, y in ckpt.items() if x.startswith("backbone.")}
         msg = backbone.load_state_dict(renamed_checkpoint, strict=False)
         print(f"Loaded model with msg: {msg}")
-
-        # for _ in range(config.transformer["num_layers"]):
-        #     layer = Block(config, vis)
-        #     self.layer.append(copy.deepcopy(layer))
 
         self.layer = backbone.blocks
         self.encoder_norm = backbone.norm
