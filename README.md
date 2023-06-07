@@ -80,8 +80,3 @@ If you find this code useful, please cite in your research papers.
 ## Questions
 For further questions, pls feel free to contact [Zhao Wang](mailto:zwang21@cse.cuhk.edu.hk).
 
-## References
-
-[1] A. Paszke, S. Gross, F. Massa, A. Lerer, J. Bradbury, G. Chanan, T. Killeen, Z. Lin, N. Gimelshein, L. Antiga *et
-al.*, “Pytorch: An imperative style, high-performance deep learning library,” in *Advances in neural information
-processing systems*, 2019, pp. 8026–8037.
