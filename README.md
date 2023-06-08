@@ -217,7 +217,7 @@ bash scripts/test_finetune_polypdiag.sh
 
 # CVC (Segmentation)
 cd Endo-FM/TransUNet
-python train.py --test --weights cvc.pth
+python train.py --test
 
 # KUMC (Detection)
 cd Endo-FM/STMT
