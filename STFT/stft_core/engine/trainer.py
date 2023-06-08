@@ -6,6 +6,7 @@ import time
 
 import torch
 import torch.distributed as dist
+from ..utils.comm import is_main_process
 from tqdm import tqdm
 
 from stft_core.data import make_data_loader
@@ -130,23 +131,24 @@ def do_train(
                 tb_writer.add_scalar('Training/LR', optimizer.param_groups[0]["lr"], iteration)
                 for each_name, each_meter in meters.meters.items():
                     tb_writer.add_scalar('Training/{}'.format(each_name), each_meter.global_avg, iteration)
-            logger.info(
-                meters.delimiter.join(
-                    [
-                        "eta: {eta}",
-                        "iter: {iter}",
-                        "{meters}",
-                        "lr: {lr:.6f}",
-                        "max mem: {memory:.0f}",
-                    ]
-                ).format(
-                    eta=eta_string,
-                    iter=iteration,
-                    meters=str(meters),
-                    lr=optimizer.param_groups[0]["lr"],
-                    memory=torch.cuda.max_memory_allocated() / 1024.0 / 1024.0,
+            if is_main_process():
+                logger.info(
+                    meters.delimiter.join(
+                        [
+                            "eta: {eta}",
+                            "iter: {iter}",
+                            "{meters}",
+                            "lr: {lr:.6f}",
+                            "max mem: {memory:.0f}",
+                        ]
+                    ).format(
+                        eta=eta_string,
+                        iter=iteration,
+                        meters=str(meters),
+                        lr=optimizer.param_groups[0]["lr"],
+                        memory=torch.cuda.max_memory_allocated() / 1024.0 / 1024.0,
+                    )
                 )
-            )
 
         inference_flag = False
         if test_period > 0 and iteration % test_period == 0:

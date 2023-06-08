@@ -35,7 +35,7 @@ def vid_cvcvideo_evaluation(dataset, predictions, output_folder, visulize, vis_t
         torch.save(gt_boxlists, os.path.join(output_folder, "gt_boxlists.pth"))
         torch.save(filename_lists, os.path.join(output_folder, "filename_lists.pth"))
     
-    score_thrs = np.arange(0., 1.0, 0.1)
+    score_thrs = np.arange(0.5, 0.6, 0.1)
 
     logger.info(" Polyp Detection Task:")
     det_evals_dict = {}

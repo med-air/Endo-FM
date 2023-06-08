@@ -170,6 +170,8 @@ def main():
         args.local_rank = ompi_local_rank()
     model = train(cfg, args.local_rank, args.distributed, logger, tb_writer)
 
+    exit(0)
+
 
 
 if __name__ == "__main__":

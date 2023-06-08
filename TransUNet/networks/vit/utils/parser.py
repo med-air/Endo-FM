@@ -59,7 +59,12 @@ def parse_args():
     )
     # if len(sys.argv) == 1:
     #     parser.print_help()
-    return parser.parse_args()
+
+    args, unknown = parser.parse_known_args()
+
+    return args
+
+    # return parser.parse_args()
 
 
 def load_config(args):

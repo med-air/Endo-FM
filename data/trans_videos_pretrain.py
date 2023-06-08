@@ -4,8 +4,8 @@ cv2.setNumThreads(1)
 from joblib import Parallel, delayed
 from tqdm import tqdm
 
-datadir = 'data/pretrain'
-savedir = 'data/pretrain/public_pretrain_videos_clips_5s'
+datadir = 'pretrain'
+savedir = 'pretrain/public_pretrain_videos_clips_5s'
 
 
 def save_txt(data, file):
@@ -64,7 +64,8 @@ def process_single(video_info):
         start_index += clip_length
 
 
-videolist = read_txt(os.path.join(datadir, 'videolist.txt'))
+videolist = read_txt(os.path.join(datadir, 'sun_seg.txt'))
+print(len(videolist))
 
-n_jobs = 32
+n_jobs = 10
 Parallel(n_jobs=n_jobs)(delayed(process_single)(os.path.join(video_info)) for video_info in tqdm(videolist))

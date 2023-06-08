@@ -47,7 +47,7 @@ def eval_finetune(args):
         dataset_train = UCF101(cfg=config, mode="train", num_retries=10)
         dataset_val = UCF101(cfg=config, mode="val", num_retries=10)
         config.TEST.NUM_SPATIAL_CROPS = 3
-        multi_crop_val = UCF101(cfg=config, mode="val", num_retries=10)
+        # multi_crop_val = UCF101(cfg=config, mode="val", num_retries=10)
     elif args.dataset == "hmdb51":
         dataset_train = HMDB51(cfg=config, mode="train", num_retries=10)
         dataset_val = HMDB51(cfg=config, mode="val", num_retries=10)
@@ -78,13 +78,13 @@ def eval_finetune(args):
         shuffle=False
     )
 
-    multi_crop_val_loader = torch.utils.data.DataLoader(
-        multi_crop_val,
-        batch_size=args.batch_size_per_gpu,
-        num_workers=args.num_workers,
-        pin_memory=True,
-        shuffle=False
-    )
+    # multi_crop_val_loader = torch.utils.data.DataLoader(
+    #     multi_crop_val,
+    #     batch_size=args.batch_size_per_gpu,
+    #     num_workers=args.num_workers,
+    #     pin_memory=True,
+    #     shuffle=False
+    # )
 
     print(f"Data loaded with {len(dataset_train)} train and {len(dataset_val)} val imgs.")
 
@@ -130,15 +130,15 @@ def eval_finetune(args):
     linear_classifier = linear_classifier.cuda()
     linear_classifier = nn.parallel.DistributedDataParallel(linear_classifier, device_ids=[args.gpu])
 
-    if args.lc_pretrained_weights:
-        lc_ckpt = torch.load(args.lc_pretrained_weights)
-        msg = linear_classifier.load_state_dict(lc_ckpt['state_dict'])
-        print(f"Loaded linear classifier weights with msg: {msg}")
-        test_stats = validate_network_multi_view(multi_crop_val_loader, model, linear_classifier, args.n_last_blocks,
-                                                 args.avgpool_patchtokens, config)
-        # test_stats = validate_network(val_loader, model, linear_classifier, args.n_last_blocks, args.avgpool_patchtokens)
-        print(test_stats)
-        return True
+    if args.test:
+        utils.restart_from_checkpoint(
+            args.pretrained_model_weights,
+            state_dict=linear_classifier,
+        )
+        test_stats, f1 = validate_network(val_loader, model, linear_classifier, args.n_last_blocks,
+                                          args.avgpool_patchtokens)
+        print(f"F1 score of the network on the {len(dataset_val)} test images: {f1 * 100:.1f}%")
+        exit(0)
 
     scaled_lr = args.lr * (args.batch_size_per_gpu * utils.get_world_size()) / 256.
 
@@ -195,9 +195,9 @@ def eval_finetune(args):
 
     # test_stats, f1 = validate_network(val_loader, model, linear_classifier, args.n_last_blocks, args.avgpool_patchtokens)
     # print("Single-view F1-Score:{:.4f}".format(f1))
-    test_stats, f1 = validate_network_multi_view(multi_crop_val_loader, model, linear_classifier, args.n_last_blocks,
-                                             args.avgpool_patchtokens, config)
-    print("Multi-view F1-Score:{:.4f}".format(f1))
+    # test_stats, f1 = validate_network_multi_view(multi_crop_val_loader, model, linear_classifier, args.n_last_blocks,
+    #                                          args.avgpool_patchtokens, config)
+    # print("Multi-view F1-Score:{:.4f}".format(f1))
     # print(test_stats)
     #
     # print("Training of the supervised linear classifier on frozen features completed.\n"
@@ -393,6 +393,8 @@ if __name__ == '__main__':
     parser.add_argument('--use_flow', default=False, type=utils.bool_flag, help="use flow teacher")
 
     parser.add_argument('--scratch', action='store_true')
+    parser.add_argument('--test', action='store_true')
+    parser.add_argument('--pretrained_model_weights', default='polypdiag.pth', type=str, help='pre-trained weights')
 
     # config file
     parser.add_argument("--cfg", dest="cfg_file", help="Path to the config file", type=str,

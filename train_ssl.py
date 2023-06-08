@@ -319,7 +319,7 @@ def train_svt(args):
         motion_student, motion_teacher = motion_student.cuda(), motion_teacher.cuda()
 
     # svt kinetics400 pretrained weights
-    pretrained_weights = torch.load('kinetics400_vitb_ssl.pth')
+    pretrained_weights = torch.load('checkpoints/kinetics400_vitb_ssl.pth')
     student.load_state_dict(pretrained_weights)
     teacher.load_state_dict(pretrained_weights)
     # print(pretrained_weights.keys())

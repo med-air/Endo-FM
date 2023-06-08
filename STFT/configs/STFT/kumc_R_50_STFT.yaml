@@ -8,7 +8,7 @@ MODEL:
       TRAIN_REF_NUM: 2
       TEST_REF_NUM: 10
   META_ARCHITECTURE: "GeneralizedRCNNSTFT"
-  WEIGHT: "../checkpoints/foundation_surgical_clips32k/checkpoint0030.pth"
+#  WEIGHT: "../checkpoints/endo_fm.pth"
   RPN_ONLY: True
   FCOS_ON: True
   STFT_ON: True
@@ -46,10 +46,6 @@ INPUT:
   MAX_SIZE_TRAIN: 640
   MIN_SIZE_TEST: 600
   MAX_SIZE_TEST: 640
-#  MIN_SIZE_TRAIN: (512,)
-#  MAX_SIZE_TRAIN: 512
-#  MIN_SIZE_TEST: 512
-#  MAX_SIZE_TEST: 512
 DATALOADER:
   SIZE_DIVISIBILITY: 32
 SOLVER:

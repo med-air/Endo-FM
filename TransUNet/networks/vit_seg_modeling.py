@@ -247,23 +247,6 @@ class Block(nn.Module):
 #         return encoded, attn_weights
 
 
-def load_model(model, weights, optimizer=None, lr_sheduler=None):
-    model_dict = model.state_dict()
-    checkpoint = torch.load(weights)
-    pretrained_dict = checkpoint['model']
-
-    # print(checkpoint['model'].keys())
-    # print(model_dict.keys())
-
-    prefix = 'module.backbone.body.'
-    pretrained_dict = {k: pretrained_dict[prefix + k] for k in model_dict.keys() if prefix + k in pretrained_dict}
-
-    # print(pretrained_dict.keys())
-
-    model_dict.update(pretrained_dict)
-    model.load_state_dict(model_dict)
-
-
 class Encoder(nn.Module):
     def __init__(self, config, vis):
         super(Encoder, self).__init__()
@@ -273,7 +256,8 @@ class Encoder(nn.Module):
 
         backbone = build_vit_base_patch16_224()
 
-        weight = '../checkpoints/foundation_surgical_clips32k/checkpoint0030.pth'
+        # Endo-FM
+        weight = '../checkpoints/endo_fm.pth'
         ckpt = torch.load(weight, map_location='cpu')
         if "teacher" in ckpt:
             ckpt = ckpt["teacher"]
@@ -285,7 +269,8 @@ class Encoder(nn.Module):
 
         renamed_checkpoint = {x[len("backbone."):]: y for x, y in ckpt.items() if x.startswith("backbone.")}
         msg = backbone.load_state_dict(renamed_checkpoint, strict=False)
-        print(f"Loaded model with msg: {msg}")
+
+        # print(f"Loaded model with msg: {msg}")
 
         self.layer = backbone.blocks
         self.encoder_norm = backbone.norm

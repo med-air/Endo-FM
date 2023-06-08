@@ -23,21 +23,16 @@ class DatasetCatalog(object):
             "anno_path": "ILSVRC2015/Annotations/VID",
             "img_index": "ILSVRC2015/ImageSets/VID_val_videos.txt"
         },
-        ####################### polyp CVCVideo #######################
+        ####################### KUMC #######################
         "CVCVideo_train_videos": {
-            "img_dir": "../data/pretrain/KUMC/processed/train2019/Image",
-            "anno_path": "../data/pretrain/KUMC/processed/train2019/Annotation",
-            "img_index": "../data/pretrain/KUMC/processed/ImageSets/train.txt"
+            "img_dir": "../data/downstream/KUMC/processed/train2019/Image",
+            "anno_path": "../data/downstream/KUMC/processed/train2019/Annotation",
+            "img_index": "../data/downstream/KUMC/processed/ImageSets/train.txt"
         },
         "CVCVideo_val_videos": {
-            "img_dir": "../data/pretrain/KUMC/processed/val2019/Image",
-            "anno_path": "../data/pretrain/KUMC/processed/val2019/Annotation",
-            "img_index": "../data/pretrain/KUMC/processed/ImageSets/val.txt"
-        },
-        "CVCVideo_test_videos": {
-            "img_dir": "../data/pretrain/KUMC/processed/test2019/Image",
-            "anno_path": "../data/pretrain/KUMC/processed/test2019/Annotation",
-            "img_index": "../data/pretrain/KUMC/processed/ImageSets/test.txt"
+            "img_dir": "../data/downstream/KUMC/processed/val2019/Image",
+            "anno_path": "../data/downstream/KUMC/processed/val2019/Annotation",
+            "img_index": "../data/downstream/KUMC/processed/ImageSets/val.txt"
         },
         ####################### polyp ASUMayo #######################
         "ASUVideo_train_videos": {

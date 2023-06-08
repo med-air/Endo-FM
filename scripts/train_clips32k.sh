@@ -1,17 +1,13 @@
 #!/bin/bash
 
-# zsh scripts/train_clips32k.sh
-
 DATA_PATH="./data/pretrain"
 EXP_NAME="foundation_surgical_clips32k"
 
-#cd "$PROJECT_PATH" || exit
 
 if [ ! -d "checkpoints/$EXP_NAME" ]; then
   mkdir "checkpoints/$EXP_NAME"
 fi
 
-#export CUDA_VISIBLE_DEVICES=0,1
 
 python -m torch.distributed.launch \
   --nproc_per_node=4 \

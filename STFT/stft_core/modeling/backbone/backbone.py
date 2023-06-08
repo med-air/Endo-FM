@@ -65,8 +65,7 @@ def build_resnet_fpn_p3p7_backbone(cfg):
     from .vit import get_vit_base_patch16_224
     body = get_vit_base_patch16_224()
 
-    weight = '../checkpoints/foundation_surgical_clips32k/checkpoint0030.pth'
-    # weight = '../checkpoints/TimeSformer_divST_8x32_224_K400.pyth'
+    weight = '../checkpoints/endo_fm.pth'
     ckpt = torch.load(weight, map_location='cpu')
     if "teacher" in ckpt:
         ckpt = ckpt["teacher"]

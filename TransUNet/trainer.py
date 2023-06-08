@@ -108,9 +108,7 @@ def trainer_synapse(args, model, snapshot_path):
 
     db_train = SegCTDataset(dataroot=args.root_path, mode='train', transforms=train_transform)
     db_test = SegCTDataset(dataroot=args.root_path, mode='test', transforms=test_transform)
-    # db_train = Synapse_dataset(base_dir=args.root_path, list_dir=args.list_dir, split="train",
-    #                            transform=transforms.Compose(
-    #                                [RandomGenerator(output_size=[args.img_size, args.img_size])]))
+
     print("The length of train set is: {}".format(len(db_train)))
     print("The length of test set is: {}".format(len(db_test)))
 
@@ -119,6 +117,14 @@ def trainer_synapse(args, model, snapshot_path):
 
     trainloader = DataLoader(db_train, batch_size=batch_size, shuffle=True, num_workers=8, worker_init_fn=worker_init_fn)
     testloader = DataLoader(db_test, batch_size=1, shuffle=False, num_workers=1)
+
+    if args.test:
+        model.eval()
+        model.load_state_dict(torch.load(args.pretrained_model_weights, map_location='cpu'))
+        test_dice, test_hd95 = eval(model, testloader, 'cuda', classes=2)
+        print('Test Dice: %.1f, HD95: %.1f' % (test_dice * 100., test_hd95))
+        exit(0)
+
     if args.n_gpu > 1:
         model = nn.DataParallel(model)
     model.train()
