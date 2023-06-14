@@ -119,7 +119,7 @@ by [Zhao Wang](https://kyfafyd.wang)\*, Chang Liu\*, [Shaoting Zhang](http://www
 
 We utilize 6 public and 1 private datasets for pre-training and 3 datasets as the downstream tasks.
 Except for SUN-SEG, we provide our preprocessed data for pre-training and downstream tasks, you can directly download via the following links:
-- [pre-training](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155167044_link_cuhk_edu_hk/EThG3T11jIxJg4eDb-Ku9xEB6LjZBcWHrseGrNu4PK2orQ?e=zWJPxR)
+- [pre-training](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155167044_link_cuhk_edu_hk/EThG3T11jIxJg4eDb-Ku9xEB6LjZBcWHrseGrNu4PK2orQ?e=qeq3jV)
 - [downstream](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155167044_link_cuhk_edu_hk/EcubwoZxij1AhG6VM3G9bT8BFplXFN2tp9yWj5HfLm3vug?e=DqyXq1)
 
 For SUN-SEG, you need first request the original videos following [this instruction](https://github.com/GewelsJI/VPS/blob/main/docs/DATA_PREPARATION.md).
