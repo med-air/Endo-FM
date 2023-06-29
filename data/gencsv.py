@@ -8,11 +8,7 @@ import glob
 
 datadir = 'pretrain'
 
-
-public_video = glob.glob(f'{datadir}/public_pretrain_videos_clips_5s/*.mp4')
-private_video = glob.glob(f'{datadir}/private_pretrain_videos_clips_5s/*.mp4')
-
-videolist = public_video + private_video
+videolist = glob.glob(f'{datadir}/*.mp4')
 
 
 videos = []

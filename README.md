@@ -95,7 +95,7 @@ by [Zhao Wang](https://kyfafyd.wang)\*, Chang Liu\*, [Shaoting Zhang](http://www
 
 - [Paper](TBA)
 - [Model](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155167044_link_cuhk_edu_hk/EZh5mWE5CL1BpaJ1bXuokfYBDM2VaMknqG7YpaQBRgAvdQ?e=e2rVYW)
-- [Code](https://github.com/med-air/Endo-FM) 
+- [OpenMEDLab Page](https://github.com/openmedlab/Endo-FM) 
 <!-- [Code] may link to your project at your institute>
 
 
@@ -103,7 +103,7 @@ by [Zhao Wang](https://kyfafyd.wang)\*, Chang Liu\*, [Shaoting Zhang](http://www
 
 ## Details
 
-> Recent foundation models have exhibited remarkable success in various downstream tasks, such as disease diagnosis and report generation. However, a foundation model for endoscopic videos is lacking. In this paper, we propose Endo-FM, a foundation model specifically designed for endoscopic video analysis. First, we build a video transformer as Endo-FM, which captures both local and global long-range dependencies across spatial and temporal dimensions. Second, we pre-train our Endo-FM using global and local views to be robust to spatial-temporal changes and discriminative across different videos. To achieve this, we construct a large-scale endoscopy video dataset by combining all publicly available datasets and a new private one. This dataset consists of over 32K video clips (5M frames), encompassing varying modalities, target organs, and disease types. Our pre-trained Endo-FM achieves promising performance on downstream tasks, surpassing state-of-the-art methods by a significant margin.
+> Recent foundation models have exhibited remarkable success in various downstream tasks, such as disease diagnosis and report generation. However, a foundation model for endoscopic videos is lacking. In this paper, we propose Endo-FM, a foundation model specifically designed for endoscopic video analysis. First, we build a video transformer as Endo-FM, which captures both local and global long-range dependencies across spatial and temporal dimensions. Second, we pre-train our Endo-FM using global and local views to be robust to spatial-temporal changes and discriminative across different videos. To achieve this, we construct a large-scale endoscopy video dataset by combining all publicly available datasets and a new private one. This dataset consists of over 33K video clips (5M frames), encompassing varying modalities, target organs, and disease types. Our pre-trained Endo-FM achieves promising performance on downstream tasks, surpassing state-of-the-art methods by a significant margin.
 
 <!-- Insert a pipeline of your algorithm here if got one -->
 
@@ -114,13 +114,30 @@ by [Zhao Wang](https://kyfafyd.wang)\*, Chang Liu\*, [Shaoting Zhang](http://www
 ## Datasets
 
 <div align="center">
-    <a href="https://"><img width="800px" height="auto" src="assets/dataset.png"></a>
+    <a href="https://"><img width="800px" height="auto" src="assets/dataset_details.png"></a>
+</div>
+
+<div align="center">
+    <a href="https://"><img width="800px" height="auto" src="assets/dataset_visualization.png"></a>
 </div>
 
 We utilize 6 public and 1 private datasets for pre-training and 3 datasets as the downstream tasks.
-Except for SUN-SEG, we provide our preprocessed data for pre-training and downstream tasks, you can directly download via the following links:
-- [pre-training](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155167044_link_cuhk_edu_hk/EThG3T11jIxJg4eDb-Ku9xEB6LjZBcWHrseGrNu4PK2orQ?e=qeq3jV)
-- [downstream](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155167044_link_cuhk_edu_hk/EcubwoZxij1AhG6VM3G9bT8BFplXFN2tp9yWj5HfLm3vug?e=DqyXq1)
+Except for SUN-SEG, we provide our preprocessed data for pre-training and downstream tasks.
+
+#### Pre-training Data (6 public + 1 private) 
+- Colonoscopic [[original paper]](https://ieeexplore.ieee.org/abstract/document/7442848) [[original dataset]](http://www.depeca.uah.es/colonoscopy_dataset/)  [[our preprocessed dataset]](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155167044_link_cuhk_edu_hk/EjX1xmuzLxhDgC2XFOuQm6YBymcSx0kcKRK0WJ5aLeZkZg?e=eaWcGW)
+- SUN-SEG [[original paper]](https://link.springer.com/article/10.1007/s11633-022-1371-y) [[original dataset]](https://github.com/GewelsJI/VPS/blob/main/docs/DATA_PREPARATION.md)
+- LPPolypVideo [[original paper]](https://link.springer.com/chapter/10.1007/978-3-030-87240-3_37) [[original dataset]](https://github.com/dashishi/LDPolypVideo-Benchmark) [[our preprocessed dataset]](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155167044_link_cuhk_edu_hk/EqyUhxD1a_JEmkJBzY3axqkBYRRQsJqgmF5p-pgh0LUQSg?e=vi9FU0)
+- Hyper-Kvasir [[original paper]](https://www.nature.com/articles/s41597-020-00622-y) [[original dataset]](https://datasets.simula.no/hyper-kvasir/) [[our preprocessed dataset]](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155167044_link_cuhk_edu_hk/EoO0sysq_URMq_cm5P-R-B4BqBDoXIsfL3NlupsBZyfW3A?e=VBDcwc)
+- Kvasir-Capsule [[original paper]](https://www.nature.com/articles/s41597-021-00920-z) [[original dataset]](https://datasets.simula.no/kvasir-capsule/) [[our preprocessed dataset]](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155167044_link_cuhk_edu_hk/EuqOhvyl9O5OggzsMIh3Xq4B1YIUZFNe25MnWNp3WCk1KQ?e=QApSVj)
+- CholecTriplet [[original paper]](https://www.sciencedirect.com/science/article/pii/S1361841522000846) [[original dataset]](https://cholectriplet2021.grand-challenge.org/) [[our preprocessed dataset]](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155167044_link_cuhk_edu_hk/EgELubRL21ZMlthpwHIJyZgB7cx9yTbjJoWuZ14gyhK0Qw?e=ahZAcI)
+- Our Private [[our preprocessed dataset]](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155167044_link_cuhk_edu_hk/EmJYfUuzesNFjenQwnZe3osB2FSdKnvGSLlp87uhDTt1Ow?e=xoCEbi)
+
+#### Downstream Data (3 public)
+- PolypDiag [[original paper]](https://link.springer.com/chapter/10.1007/978-3-031-16437-8_9) [[original dataset]](https://github.com/tianyu0207/weakly-polyp) [[our preprocessed dataset]](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155167044_link_cuhk_edu_hk/EkdIvYn0AltHkeIEF3Os8fsBhGvyyuJ2QuupJ8aoqkN_Pw?e=vv0TDc)
+- CVC-12k [[original paper]](https://www.sciencedirect.com/science/article/pii/S0895611115000567) [[original dataset]](https://polyp.grand-challenge.org/Databases/) [[our preprocessed dataset]](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155167044_link_cuhk_edu_hk/EiztownKIUNPjOV48ERuL5EBfn6KzgVUY1O4dxn1HdmlBg?e=8fq86m)
+- KUMC [[original paper]](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0255809) [[original dataset]](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/FCBUOR) [[our preprocessed dataset]](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155167044_link_cuhk_edu_hk/EuhFE9IsVHlKtsTMHMCib4oBN19pH4DSr4esxoMOSQTUEA?e=f1sk0k)
+
 
 For SUN-SEG, you need first request the original videos following [this instruction](https://github.com/GewelsJI/VPS/blob/main/docs/DATA_PREPARATION.md).
 Then, you can transfer SUN-SEG for pre-training videos by the following:
@@ -135,20 +152,6 @@ Finally, generating the video list `pretrain/train.csv` for pre-training by the 
 cd Endo-FM/data
 python gencsv.py
 ```
-
-#### Pre-training
-- [Colonoscopic](http://www.depeca.uah.es/colonoscopy_dataset/)
-- [SUN-SEG](https://github.com/GewelsJI/VPS/blob/main/docs/DATA_PREPARATION.md)
-- [LPPolypVideo](https://github.com/dashishi/LDPolypVideo-Benchmark)
-- [Hyper-Kvasir](https://datasets.simula.no/hyper-kvasir/)
-- [Kvasir-Capsule](https://datasets.simula.no/kvasir-capsule/)
-- [CholecTriplet](https://cholectriplet2021.grand-challenge.org/)
-- [Ours Private](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155167044_link_cuhk_edu_hk/EThG3T11jIxJg4eDb-Ku9xEB6LjZBcWHrseGrNu4PK2orQ?e=zWJPxR)
-
-#### Downstream
-- [PolypDiag](https://github.com/tianyu0207/weakly-polyp)
-- [CVC-12k](https://polyp.grand-challenge.org/Databases/)
-- [KUMC](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/FCBUOR)
 
 
 ## Get Started
@@ -176,9 +179,17 @@ conda activate endofm
 
 #### Pre-trained Weights
 You can directly download our pre-trained Endo-FM via this [link](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155167044_link_cuhk_edu_hk/EZh5mWE5CL1BpaJ1bXuokfYBDM2VaMknqG7YpaQBRgAvdQ?e=e2rVYW) and put it under `checkpoints/` for downstream fine-tuning.
-Also, we provide the pre-trained weights of 3 downstream tasks via this [link](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155167044_link_cuhk_edu_hk/Ei7k6w3Qic9PmSpuoRLwPbsBw1bLeh-3DrIuSAj4yedabA?e=uiDpCy) for direct downstream testing.
 
-[//]: # (#### Preprocess)
+#### Downstream Fine-tuned Weights
+Also, we provide the pre-trained weights of 3 downstream tasks for direct downstream testing.
+
+|    Dataset    | PolypDiag | CVC-12k | KUMC | 
+|:--------------:|:----:|:----:|:-----:|
+|    Our Paper   | 90.7 | 73.9 | 84.1 |
+| Released Model | 91.3 | 76.6 | 84.0 |
+| Weights | [link](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155167044_link_cuhk_edu_hk/ERSlUP10MGpBuhg1uN5iaHABKqz1SPQSrr03j4sEWey-bw?e=muv8RL) | [link](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155167044_link_cuhk_edu_hk/EePnpTllUCFEqpYp6BFPv0sBQyST4CV4jQ8pvaRynCkD7Q?e=f7LeBx) | [link](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155167044_link_cuhk_edu_hk/EYPkwbFyMfxEirezWtumAGIBSCTQ0EvDN4u99KKiRsaVBA?e=DsrkVG) |
+
+<!-- [//]: # (#### Preprocess) -->
 
 
 #### Pre-training

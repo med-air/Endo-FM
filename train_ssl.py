@@ -180,23 +180,6 @@ def train_svt(args):
     else:
         rand_conv = None
 
-    # validation data
-    # config.DATA.PATH_TO_DATA_DIR = f"{os.path.expanduser('~')}/repo/mmaction2/data/ucf101/knn_splits"
-    # config.DATA.PATH_PREFIX = f"{os.path.expanduser('~')}/repo/mmaction2/data/ucf101/videos"
-    # config.TEST.NUM_SPATIAL_CROPS = 1
-    # eval_train = UCFReturnIndexDataset(cfg=config, mode="train", num_retries=10)
-    # eval_test = UCFReturnIndexDataset(cfg=config, mode="val", num_retries=10)
-    #
-    # sampler = torch.utils.data.DistributedSampler(eval_train, shuffle=False)
-    # eval_loader_train = torch.utils.data.DataLoader(
-    #     eval_train, sampler=sampler, batch_size=args.batch_size_per_gpu, num_workers=args.num_workers,
-    #     pin_memory=True, drop_last=False,
-    # )
-    # eval_loader_test = torch.utils.data.DataLoader(
-    #     eval_test, batch_size=args.batch_size_per_gpu, num_workers=args.num_workers, pin_memory=True, drop_last=False,
-    # )
-    # print(f"Data loaded with {len(eval_train)} train and {len(eval_test)} val imgs.")
-
     # ============ building student and teacher networks ... ============
     # we changed the name DeiT-S for ViT-S to avoid confusions
     args.arch = args.arch.replace("deit", "vit")
@@ -232,12 +215,6 @@ def train_svt(args):
             motion_student = None
             motion_teacher = None
             motion_embed_dim = None
-
-    # print(teacher)
-    # flops, params = profile(teacher, inputs=(torch.randn(1, 3, 16, 224, 224),))
-    # print('FLOPs = ' + str(flops / 1000 ** 3) + 'G')
-    # print('Params = ' + str(params / 1000 ** 2) + 'M')
-    # exit(0)
 
     if args.arch == "swin":
         student = SwinTransformer3D(depths=[2, 2, 18, 2], embed_dim=128, num_heads=[4, 8, 16, 32])
@@ -318,14 +295,10 @@ def train_svt(args):
         # move networks to gpu
         motion_student, motion_teacher = motion_student.cuda(), motion_teacher.cuda()
 
-    # svt kinetics400 pretrained weights
+    # kinetics400 pretrained weights
     pretrained_weights = torch.load('checkpoints/kinetics400_vitb_ssl.pth')
     student.load_state_dict(pretrained_weights)
     teacher.load_state_dict(pretrained_weights)
-    # print(pretrained_weights.keys())
-    # print(student.state_dict().keys())
-    # print(teacher.state_dict().keys())
-    # exit(0)
 
     # move networks to gpu
     student, teacher = student.cuda(), teacher.cuda()
@@ -448,9 +421,6 @@ def train_svt(args):
                                       motion_student=motion_student, motion_teacher=motion_teacher,
                                       motion_teacher_without_ddp=motion_teacher_without_ddp, rand_conv=rand_conv)
 
-        # TODO: fix online evaluation for multi-gpu training
-        # val_stats = eval_knn(eval_loader_train, eval_loader_test, teacher, eval_train, eval_test, opt=args)
-
         # ============ writing logs ... ============
         save_dict = {
             'student': student.state_dict(),
@@ -493,17 +463,13 @@ def train_one_epoch(student, teacher, teacher_without_ddp, dino_loss, data_loade
 
         # move images to gpu
         images = [im.cuda(non_blocking=True) for im in images]
-        # for im in images:
-        #     print(im.shape)
-        # exit(0)
+
         if cfg.MODEL.TWO_STREAM:
             if cfg.DATA.NO_FLOW_AUG:
                 # meta['flow'] = [x.cuda(non_blocking=True) for x in meta['flow']]
                 idx = np.random.choice(range(cfg.DATA.NUM_FRAMES), 2, replace=False)
                 flow_images = [meta['flow'][x].cuda(non_blocking=True) for x in idx]
         elif cfg.MODEL.TWO_TOKEN:
-            # diff_images = utils.get_diff_images(images)
-            # flow_images = utils.get_flow_images(meta['flow'], temporal_length=8)
             pass
 
         # teacher and student forward passes + compute dino loss

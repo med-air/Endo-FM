@@ -40,29 +40,23 @@ def eval_finetune(args):
 
     # ============ preparing data ... ============
     config = load_config(args)
-    # config.DATA.PATH_TO_DATA_DIR = f"{os.path.expanduser('~')}/repo/mmaction2/data/{args.dataset}/splits"
-    # config.DATA.PATH_PREFIX = f"{os.path.expanduser('~')}/repo/mmaction2/data/{args.dataset}/videos"
     config.TEST.NUM_SPATIAL_CROPS = 1
     if args.dataset == "ucf101":
         dataset_train = UCF101(cfg=config, mode="train", num_retries=10)
         dataset_val = UCF101(cfg=config, mode="val", num_retries=10)
         config.TEST.NUM_SPATIAL_CROPS = 3
-        # multi_crop_val = UCF101(cfg=config, mode="val", num_retries=10)
     elif args.dataset == "hmdb51":
         dataset_train = HMDB51(cfg=config, mode="train", num_retries=10)
         dataset_val = HMDB51(cfg=config, mode="val", num_retries=10)
         config.TEST.NUM_SPATIAL_CROPS = 3
-        multi_crop_val = HMDB51(cfg=config, mode="val", num_retries=10)
     elif args.dataset == "kinetics400":
         dataset_train = Kinetics(cfg=config, mode="train", num_retries=10)
         dataset_val = Kinetics(cfg=config, mode="val", num_retries=10)
         config.TEST.NUM_SPATIAL_CROPS = 3
-        multi_crop_val = Kinetics(cfg=config, mode="val", num_retries=10)
     else:
         raise NotImplementedError(f"invalid dataset: {args.dataset}")
 
     train_sampler = torch.utils.data.distributed.DistributedSampler(dataset_train, shuffle=True)
-    # val_sampler = torch.utils.data.distributed.DistributedSampler(dataset_train, shuffle=False)
     train_loader = torch.utils.data.DataLoader(
         dataset_train,
         sampler=train_sampler,
@@ -77,14 +71,6 @@ def eval_finetune(args):
         pin_memory=True,
         shuffle=False
     )
-
-    # multi_crop_val_loader = torch.utils.data.DataLoader(
-    #     multi_crop_val,
-    #     batch_size=args.batch_size_per_gpu,
-    #     num_workers=args.num_workers,
-    #     pin_memory=True,
-    #     shuffle=False
-    # )
 
     print(f"Data loaded with {len(dataset_train)} train and {len(dataset_val)} val imgs.")
 
@@ -121,7 +107,7 @@ def eval_finetune(args):
     model = nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu])
     if utils.has_batchnorms(model):
         model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
-    # model.eval()
+
     print(f"Model {args.arch} {args.patch_size}x{args.patch_size} built.")
     # load weights to evaluate
 
@@ -146,8 +132,6 @@ def eval_finetune(args):
     optimizer = torch.optim.SGD(
         [{'params': model.parameters(), 'lr': scaled_lr},
          {'params': linear_classifier.parameters(), 'lr': scaled_lr}],
-        # linear_classifier.parameters(),
-        # args.lr * (args.batch_size_per_gpu * utils.get_world_size()) / 256., # linear scaling rule
         momentum=0.9,
         weight_decay=0,  # we do not apply weight decay
     )
@@ -163,7 +147,6 @@ def eval_finetune(args):
         scheduler=scheduler,
     )
     start_epoch = to_restore["epoch"]
-    best_acc = to_restore["best_acc"]
     best_f1 = to_restore["best_acc"]
 
     for epoch in range(start_epoch, args.epochs):
@@ -188,20 +171,9 @@ def eval_finetune(args):
                 "state_dict": linear_classifier.state_dict(),
                 "optimizer": optimizer.state_dict(),
                 "scheduler": scheduler.state_dict(),
-                # "best_acc": best_acc,
                 "best_f1": best_f1,
             }
             torch.save(save_dict, os.path.join(args.output_dir, "checkpoint.pth.tar"))
-
-    # test_stats, f1 = validate_network(val_loader, model, linear_classifier, args.n_last_blocks, args.avgpool_patchtokens)
-    # print("Single-view F1-Score:{:.4f}".format(f1))
-    # test_stats, f1 = validate_network_multi_view(multi_crop_val_loader, model, linear_classifier, args.n_last_blocks,
-    #                                          args.avgpool_patchtokens, config)
-    # print("Multi-view F1-Score:{:.4f}".format(f1))
-    # print(test_stats)
-    #
-    # print("Training of the supervised linear classifier on frozen features completed.\n"
-    #       "Top-1 test accuracy: {acc:.1f}".format(acc=best_acc))
 
 
 def train(args, model, linear_classifier, optimizer, loader, epoch, n, avgpool):
@@ -214,16 +186,6 @@ def train(args, model, linear_classifier, optimizer, loader, epoch, n, avgpool):
         inp = inp.cuda(non_blocking=True)
         target = target.cuda(non_blocking=True)
 
-        # print(inp.shape)
-        # exit(0)
-        # forward
-        # with torch.no_grad():
-        #     # intermediate_output = model.get_intermediate_layers(inp, n)
-        #     # output = [x[:, 0] for x in intermediate_output]
-        #     # if avgpool:
-        #     #     output.append(torch.mean(intermediate_output[-1][:, 1:], dim=1))
-        #     # output = torch.cat(output, dim=-1)
-        # print(inp.shape)
         output = model(inp)
         output = linear_classifier(output)
 
@@ -261,11 +223,6 @@ def validate_network(val_loader, model, linear_classifier, n, avgpool):
 
         # forward
         with torch.no_grad():
-            # intermediate_output = model.get_intermediate_layers(inp, n)
-            # output = [x[:, 0] for x in intermediate_output]
-            # if avgpool:
-            #     output.append(torch.mean(intermediate_output[-1][:, 1:], dim=1))
-            # output = torch.cat(output, dim=-1)
             output = model(inp)
         output = linear_classifier(output)
         loss = nn.CrossEntropyLoss()(output, target)
@@ -285,13 +242,7 @@ def validate_network(val_loader, model, linear_classifier, n, avgpool):
             metric_logger.meters['acc5'].update(acc5.item(), n=batch_size)
 
     f1 = f1_score(all_target, all_output)
-    # print("Single-view F1-Score:{:.4f}".format(f1_score))
-    # if linear_classifier.module.num_labels >= 5:
-    #     print('* Acc@1 {top1.global_avg:.3f} Acc@5 {top5.global_avg:.3f} loss {losses.global_avg:.3f}'
-    #           .format(top1=metric_logger.acc1, top5=metric_logger.acc5, losses=metric_logger.loss))
-    # else:
-    #     print('* Acc@1 {top1.global_avg:.3f} loss {losses.global_avg:.3f}'
-    #           .format(top1=metric_logger.acc1, losses=metric_logger.loss))
+
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}, f1
 
 
@@ -313,7 +264,6 @@ def validate_network_multi_view(val_loader, model, linear_classifier, n, avgpool
     for cur_iter, (inp, target, sample_idx, meta) in tqdm(enumerate(val_loader), total=len(val_loader)):
         # move to gpu
         inp = inp.cuda(non_blocking=True)
-        # target = target.cuda(non_blocking=True)
         test_meter.data_toc()
 
         # forward
@@ -338,7 +288,6 @@ def validate_network_multi_view(val_loader, model, linear_classifier, n, avgpool
         test_meter.iter_tic()
 
     f1 = f1_score(all_target, all_output)
-    # print("Multi-view F1-Score:{:.4f}".format())
 
     test_meter.finalize_metrics(ks=(1, ))
     return test_meter.stats, f1
