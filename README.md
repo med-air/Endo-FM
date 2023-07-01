@@ -88,7 +88,7 @@ by [Zhao Wang](https://kyfafyd.wang)\*, Chang Liu\*, [Shaoting Zhang](http://www
 
 [//]: # (key feature bulletin points here)
 - First foundation model for endoscopy video analysis.
-- A large-scale endoscopic video dataset with over 32k video clips.
+- A large-scale endoscopic video dataset with over 33K video clips.
 - Support 3 types of downstream tasks, including classification, segmentation, and detection.
 
 ## Links
