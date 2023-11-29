@@ -122,7 +122,7 @@ by [Zhao Wang](https://kyfafyd.wang)\*, Chang Liu\*, [Shaoting Zhang](http://www
 </div>
 
 We utilize 6 public and 1 private datasets for pre-training and 3 datasets as the downstream tasks.
-Except for SUN-SEG, we provide our preprocessed data for pre-training and downstream tasks.
+Except for SUN & SUN-SEG, we provide our preprocessed data for pre-training and downstream tasks.
 
 #### Pre-training Data (6 public + 1 private) 
 - Colonoscopic [[original paper]](https://ieeexplore.ieee.org/abstract/document/7442848) [[original dataset]](http://www.depeca.uah.es/colonoscopy_dataset/)  [[our preprocessed dataset]](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155167044_link_cuhk_edu_hk/EjX1xmuzLxhDgC2XFOuQm6YBymcSx0kcKRK0WJ5aLeZkZg?e=eaWcGW)
@@ -139,8 +139,8 @@ Except for SUN-SEG, we provide our preprocessed data for pre-training and downst
 - KUMC [[original paper]](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0255809) [[original dataset]](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/FCBUOR) [[our preprocessed dataset]](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155167044_link_cuhk_edu_hk/EuhFE9IsVHlKtsTMHMCib4oBN19pH4DSr4esxoMOSQTUEA?e=f1sk0k)
 
 
-For SUN-SEG, you need first request the original videos following [this instruction](https://github.com/GewelsJI/VPS/blob/main/docs/DATA_PREPARATION.md).
-Then, you can transfer SUN-SEG for pre-training videos by the following:
+For SUN & SUN-SEG, you need first request the original videos following [this instruction](https://github.com/GewelsJI/VPS/blob/main/docs/DATA_PREPARATION.md).
+Then, you can transfer the data for pre-training videos by the following:
 ```bash
 cd Endo-FM/data
 python sun.py
