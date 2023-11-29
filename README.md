@@ -126,7 +126,7 @@ Except for SUN-SEG, we provide our preprocessed data for pre-training and downst
 
 #### Pre-training Data (6 public + 1 private) 
 - Colonoscopic [[original paper]](https://ieeexplore.ieee.org/abstract/document/7442848) [[original dataset]](http://www.depeca.uah.es/colonoscopy_dataset/)  [[our preprocessed dataset]](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155167044_link_cuhk_edu_hk/EjX1xmuzLxhDgC2XFOuQm6YBymcSx0kcKRK0WJ5aLeZkZg?e=eaWcGW)
-- SUN-SEG [[original paper]](https://link.springer.com/article/10.1007/s11633-022-1371-y) [[original dataset]](https://github.com/GewelsJI/VPS/blob/main/docs/DATA_PREPARATION.md)
+- SUN & SUN-SEG [[original paper1]](https://www.sciencedirect.com/science/article/pii/S0016510720346551) [[original paper2]](https://link.springer.com/article/10.1007/s11633-022-1371-y) [[original dataset1]](http://amed8k.sundatabase.org/) [[original dataset2]](https://github.com/GewelsJI/VPS/blob/main/docs/DATA_PREPARATION.md)
 - LPPolypVideo [[original paper]](https://link.springer.com/chapter/10.1007/978-3-030-87240-3_37) [[original dataset]](https://github.com/dashishi/LDPolypVideo-Benchmark) [[our preprocessed dataset]](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155167044_link_cuhk_edu_hk/EqyUhxD1a_JEmkJBzY3axqkBYRRQsJqgmF5p-pgh0LUQSg?e=vi9FU0)
 - Hyper-Kvasir [[original paper]](https://www.nature.com/articles/s41597-020-00622-y) [[original dataset]](https://datasets.simula.no/hyper-kvasir/) [[our preprocessed dataset]](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155167044_link_cuhk_edu_hk/EoO0sysq_URMq_cm5P-R-B4BqBDoXIsfL3NlupsBZyfW3A?e=VBDcwc)
 - Kvasir-Capsule [[original paper]](https://www.nature.com/articles/s41597-021-00920-z) [[original dataset]](https://datasets.simula.no/kvasir-capsule/) [[our preprocessed dataset]](https://mycuhk-my.sharepoint.com/:f:/g/personal/1155167044_link_cuhk_edu_hk/EuqOhvyl9O5OggzsMIh3Xq4B1YIUZFNe25MnWNp3WCk1KQ?e=QApSVj)
@@ -264,7 +264,7 @@ If you find this code useful, please cite in your research papers.
     title={Foundation Model for Endoscopy Video Analysis via Large-scale Self-supervised Pre-train},
     author={Zhao Wang and Chang Liu and Shaoting Zhang and Qi Dou},
     booktitle={International Conference on Medical Image Computing and Computer-Assisted Intervention},
-    pages={},
+    pages={101--111},
     year={2023},
     organization={Springer}
 }
