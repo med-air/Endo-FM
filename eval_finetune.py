@@ -159,24 +159,28 @@ def eval_finetune(args):
         if epoch % args.val_freq == 0 or epoch == args.epochs - 1:
             test_stats, f1 = validate_network(val_loader, model, linear_classifier, args.n_last_blocks, args.avgpool_patchtokens)
             print(f"F1 score at epoch {epoch} of the network on the {len(dataset_val)} test images: {f1 * 100:.1f}%")
-            best_f1 = max(best_f1, f1)
-            print(f'Max F1 score so far: {best_f1 * 100:.1f}%')
             log_stats = {**{k: v for k, v in log_stats.items()},
                          **{f'test_{k}': v for k, v in test_stats.items()}}
-        if utils.is_main_process():
-            with (Path(args.output_dir) / "log.txt").open("a") as f:
-                f.write(json.dumps(log_stats) + "\n")
-            save_dict = {
-                "epoch": epoch + 1,
-                "state_dict": linear_classifier.state_dict(),
-                "optimizer": optimizer.state_dict(),
-                "scheduler": scheduler.state_dict(),
-                "best_f1": best_f1,
-            }
-            torch.save(save_dict, os.path.join(args.output_dir, "checkpoint.pth.tar"))
+
+            if f1 > best_f1 and utils.is_main_process():
+                with (Path(args.output_dir) / "log.txt").open("a") as f:
+                    f.write(json.dumps(log_stats) + "\n")
+                save_dict = {
+                    "epoch": epoch + 1,
+                    "state_dict": linear_classifier.state_dict(),
+                    "backbone_state_dict": model.state_dict(),
+                    "optimizer": optimizer.state_dict(),
+                    "scheduler": scheduler.state_dict(),
+                    "best_f1": best_f1,
+                }
+                torch.save(save_dict, os.path.join(args.output_dir, "checkpoint.pth.tar"))
+
+            best_f1 = max(best_f1, f1)
+            print(f'Max F1 score so far: {best_f1 * 100:.1f}%')
 
 
 def train(args, model, linear_classifier, optimizer, loader, epoch, n, avgpool):
+    model.train()
     linear_classifier.train()
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter('lr', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
@@ -211,6 +215,7 @@ def train(args, model, linear_classifier, optimizer, loader, epoch, n, avgpool):
 
 @torch.no_grad()
 def validate_network(val_loader, model, linear_classifier, n, avgpool):
+    model.eval()
     linear_classifier.eval()
     metric_logger = utils.MetricLogger(delimiter="  ")
     header = 'Test:'
