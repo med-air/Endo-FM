@@ -186,7 +186,7 @@ Also, we provide the pre-trained weights of 3 downstream tasks for direct downst
 |    Dataset    | PolypDiag | CVC-12k | KUMC | 
 |:--------------:|:----:|:----:|:-----:|
 |    Our Paper   | 90.7 | 73.9 | 84.1 |
-| Released Model | 91.3 | 76.6 | 84.0 |
+| Released Model | 91.5 | 76.6 | 84.0 |
 | Weights | [link](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155167044_link_cuhk_edu_hk/ERSlUP10MGpBuhg1uN5iaHABKqz1SPQSrr03j4sEWey-bw?e=muv8RL) | [link](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155167044_link_cuhk_edu_hk/EePnpTllUCFEqpYp6BFPv0sBQyST4CV4jQ8pvaRynCkD7Q?e=f7LeBx) | [link](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155167044_link_cuhk_edu_hk/EYPkwbFyMfxEirezWtumAGIBSCTQ0EvDN4u99KKiRsaVBA?e=DsrkVG) |
 
 <!-- [//]: # (#### Preprocess) -->
