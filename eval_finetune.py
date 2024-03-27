@@ -119,6 +119,7 @@ def eval_finetune(args):
     if args.test:
         utils.restart_from_checkpoint(
             args.pretrained_model_weights,
+            backbone_state_dict=model,
             state_dict=linear_classifier,
         )
         test_stats, f1 = validate_network(val_loader, model, linear_classifier, args.n_last_blocks,
