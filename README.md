@@ -75,6 +75,8 @@
 [//]: # (Updated on 2023.06.09)
 
 
+### 🔥 You may also check our improved version of this foundation model for handling much longer endoscopy video sequences at [EndoFM-LV](https://github.com/med-air/EndoFM-LV).
+
 
 This repository provides the official PyTorch implementation of the paper [**Foundation Model for Endoscopy Video Analysis via Large-scale Self-supervised Pre-train**](https://arxiv.org/abs/2306.16741)
 by [Zhao Wang](https://kyfafyd.wang)\*, [Chang Liu](https://scholar.google.com/citations?user=q2JSP3kAAAAJ)\*, [Shaoting Zhang](http://www.qingyuan.sjtu.edu.cn/a/Shaoting-Zhang.html)†, and [Qi Dou](http://www.cse.cuhk.edu.hk/~qdou)†.
