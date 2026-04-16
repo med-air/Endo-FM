@@ -180,7 +180,7 @@ conda activate endofm
 ```
 
 #### Pre-trained Weights
-You can directly download our pre-trained Endo-FM via this [link](https://mycuhk-my.sharepoint.com/:u:/g/personal/1155167044_link_cuhk_edu_hk/EZh5mWE5CL1BpaJ1bXuokfYBDM2VaMknqG7YpaQBRgAvdQ?e=e2rVYW) and put it under `checkpoints/` for downstream fine-tuning.
+You can directly download our pre-trained Endo-FM via this [link](https://drive.google.com/file/d/1H7B91Ewm4QkZRsnUk1Bn0IQch5P8C7Xl/view?usp=sharing) and put it under `checkpoints/` for downstream fine-tuning.
 
 #### Downstream Fine-tuned Weights
 Also, we provide the pre-trained weights of 3 downstream tasks for direct downstream testing.
